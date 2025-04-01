@@ -20,42 +20,43 @@ import rarfile
 import tarfile
 import py7zr
 
+
 CONVERSION_MAP = {
     # Conversões de áudio
-    ".mp3": ["wav", "ogg", "flac", "aac", "m4a", "mp4", "avi", "mkv", "webm"],
-    ".wav": ["mp3", "ogg", "flac", "aac", "m4a", "mp4", "avi", "mkv", "webm"],
-    ".ogg": ["mp3", "wav", "flac", "aac", "m4a", "mp4", "avi", "mkv", "webm"],
-    ".flac": ["mp3", "wav", "ogg", "aac", "m4a", "mp4", "avi", "mkv", "webm"],
-    ".aac": ["mp3", "wav", "ogg", "flac", "m4a", "mp4", "avi", "mkv", "webm"],
-    ".m4a": ["mp3", "wav", "ogg", "flac", "aac", "mp4", "avi", "mkv", "webm"],
+    ".mp3": ["wav", "ogg", "flac", "aac", "m4a", "mp4", "avi", "mkv", "webm"], # Formatos de saída suportados
+    ".wav": ["mp3", "ogg", "flac", "aac", "m4a", "mp4", "avi", "mkv", "webm"], # Formatos de saída suportados
+    ".ogg": ["mp3", "wav", "flac", "aac", "m4a", "mp4", "avi", "mkv", "webm"], # Formatos de saída suportados
+    ".flac": ["mp3", "wav", "ogg", "aac", "m4a", "mp4", "avi", "mkv", "webm"], # Formatos de saída suportados
+    ".aac": ["mp3", "wav", "ogg", "flac", "m4a", "mp4", "avi", "mkv", "webm"], # Formatos de saída suportados
+    ".m4a": ["mp3", "wav", "ogg", "flac", "aac", "mp4", "avi", "mkv", "webm"], # Formatos de saída suportados
 
     # Conversões de vídeo
-    ".mp4": ["avi", "mkv", "webm", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
-    ".avi": ["mp4", "mkv", "webm", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
-    ".mkv": ["mp4", "avi", "webm", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
-    ".webm": ["mp4", "avi", "mkv", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
-    ".mov": ["mp4", "avi", "mkv", "webm", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
-    ".flv": ["mp4", "avi", "mkv", "webm", "mov", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
-    ".wmv": ["mp4", "avi", "mkv", "webm", "mov", "flv", "mp3", "wav", "ogg", "flac", "aac", "m4a"],
+    ".mp4": ["avi", "mkv", "webm", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados 
+    ".avi": ["mp4", "mkv", "webm", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados
+    ".mkv": ["mp4", "avi", "webm", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados
+    ".webm": ["mp4", "avi", "mkv", "mov", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados
+    ".mov": ["mp4", "avi", "mkv", "webm", "flv", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados
+    ".flv": ["mp4", "avi", "mkv", "webm", "mov", "wmv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados
+    ".wmv": ["mp4", "avi", "mkv", "webm", "mov", "flv", "mp3", "wav", "ogg", "flac", "aac", "m4a"], # Formatos de saída suportados
 
     # Conversões de imagem
-    ".jpg": ["png", "bmp", "ico", "webp", "jpeg", "pdf", "tiff", "gif"],
-    ".jpeg": ["png", "bmp", "ico", "webp", "jpg", "pdf", "tiff", "gif"],
-    ".png": ["jpg", "bmp", "ico", "webp", "jpeg", "pdf", "tiff", "gif"],
-    ".bmp": ["jpg", "png", "ico", "webp", "jpeg", "pdf", "tiff", "gif"],
-    ".ico": ["jpg", "png", "bmp", "webp", "jpeg", "pdf", "tiff", "gif"],
-    ".webp": ["jpg", "png", "bmp", "ico", "jpeg", "pdf", "tiff", "gif"],
-    ".tiff": ["jpg", "png", "bmp", "ico", "webp", "jpeg", "pdf", "gif"],
-    ".gif": ["jpg", "png", "bmp", "ico", "webp", "jpeg", "pdf", "tiff"],
+    ".jpg": ["png", "bmp", "ico", "webp", "jpeg", "pdf", "tiff", "gif"], # Formatos de saída suportados
+    ".jpeg": ["png", "bmp", "ico", "webp", "jpg", "pdf", "tiff", "gif"], # Formatos de saída suportados
+    ".png": ["bmp", "ico", "webp", "jpeg", "pdf", "tiff", "gif"], # Formatos de saída suportados
+    ".bmp": ["png", "ico", "webp", "jpeg", "pdf", "tiff", "gif"], # Formatos de saída suportados
+    ".ico": ["png", "bmp", "webp", "jpeg", "pdf", "tiff", "gif"], # Formatos de saída suportados
+    ".webp": ["png", "bmp", "ico", "jpeg", "pdf", "tiff", "gif"], # Formatos de saída suportados
+    ".tiff": ["png", "bmp", "ico", "webp", "jpeg", "pdf", "gif"], # Formatos de saída suportados
+    ".gif": ["png", "bmp", "ico", "webp", "jpeg", "pdf", "tiff"], # Formatos de saída suportados
 
     # Conversões de texto e documentos
-    ".txt": ["pdf", "docx", "odt", "html", "rtf", "csv"],
-    ".pdf": ["txt", "docx", "jpg", "png", "html", "odt", "rtf"],
-    ".docx": ["txt", "pdf", "odt", "html", "rtf", "csv"],
-    ".odt": ["txt", "pdf", "docx", "html", "rtf", "csv"],
-    ".html": ["txt", "pdf", "docx", "odt", "rtf", "csv"],
-    ".rtf": ["txt", "pdf", "docx", "odt", "html", "csv"],
-    ".csv": ["txt", "pdf", "docx", "odt", "html", "rtf"],
+    ".txt": ["pdf", "docx", "odt", "html", "rtf", "csv"], # Formatos de saída suportados
+    ".pdf": ["txt", "docx", "jpg", "png", "html", "odt", "rtf"], # Formatos de saída suportados
+    ".docx": ["txt", "pdf", "odt", "html", "rtf", "csv"], # Formatos de saída suportados
+    ".odt": ["txt", "pdf", "docx", "html", "rtf", "csv"], # Formatos de saída suportados
+    ".html": ["txt", "pdf", "docx", "odt", "rtf", "csv"], # Formatos de saída suportados
+    ".rtf": ["txt", "pdf", "docx", "odt", "html", "csv"], # Formatos de saída suportados
+    ".csv": ["txt", "pdf", "docx", "odt", "html", "rtf"], # Formatos de saída suportados
 
     # Conversões de outros formatos
     ".zip": ["rar", "tar", "7z"],
@@ -73,6 +74,37 @@ def sanitize_filename(filename):
     filename = re.sub(r'-+/', '', filename)
     filename = filename.strip('')
     return filename
+
+import subprocess
+
+def convert_webm_to_mp3(input_file, output_file):
+    """
+    Converte um arquivo .webm para .mp3 usando ffmpeg.
+
+    :param input_file: Caminho do arquivo .webm de entrada.
+    :param output_file: Caminho do arquivo .mp3 de saída.
+    :return: True se a conversão for bem-sucedida, False caso contrário.
+    """
+    try:
+        # Comando ffmpeg para converter .webm para .mp3
+        command = [
+            "ffmpeg",
+            "-i", input_file,  # Arquivo de entrada
+            "-vn",             # Ignora o vídeo, extrai apenas o áudio
+            "-acodec", "libmp3lame",  # Codec de áudio MP3
+            "-ab", "192k",      # Taxa de bits do áudio (192 kbps)
+            output_file         # Arquivo de saída
+        ]
+
+        # Executa o comando
+        subprocess.run(command, check=True)
+
+        print(f"✅ Conversão concluída: {input_file} -> {output_file}")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Erro ao converter {input_file} para MP3: {e}")
+        return False
+
 
 def convert_docx_to_pdf(input_file, output_file):
     try:
@@ -521,6 +553,8 @@ def convert_file(input_files, output_format):
                     c.drawString(100, y, line.strip())
                     y -= 15
                 c.save()
+            elif ext == ".webm" and output_format == "mp3":
+                convert_webm_to_mp3(file, output_file)
             elif ext == ".txt" and output_format == "html":
                 convert_txt_to_html(file, output_file)
             elif ext == ".txt" and output_format == "csv":
